@@ -2,7 +2,6 @@ var snake;
 var snake2;
 var coins = [];
 var goodCoins = [];
-var fastSpeedUp = [];
 var stopGame = false;
 var snake1Won = false;
 var reset = false;
@@ -95,11 +94,14 @@ function draw() {
     
     manageCoins();
     if (snake2.died && snake.died) {
-        redScore -= 1;
-        greenScore -= 1;
         tied = true;
     }
-    if (stopGame) {
+    else if (stopGame) {
+        if (snake1Won) {
+            redScore++;
+        } else {
+            greenScore++;
+        }
         return;
     }
 
@@ -263,10 +265,8 @@ function Snake(id,x,y,r,g,b) {
         this.died = true;
         stopGame = true;
         if (this.id === 0) {
-            greenScore++;
             snake1Won = false;
         } else {
-            redScore++;
             snake1Won = true;
         }
     };
