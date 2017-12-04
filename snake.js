@@ -1,6 +1,8 @@
 var snake;
+var snake2;
 var coins = [];
 var goodCoins = [];
+var fastSpeedUp = [];
 var stopGame = false;
 var snake1Won = false;
 var reset = false;
@@ -77,6 +79,7 @@ function draw() {
         return;
     }
 
+    //Draw grid
     for (var i = 0; i < 1364; i += 22) {
         stroke(110);
         line(i, 0, i, 764);
@@ -85,10 +88,15 @@ function draw() {
         stroke(110);
         line(0, i, 1364, i);
     }
+    snake.move();
+    snake2.move();
     snake.update();
     snake2.update();
+    
     manageCoins();
-    if(snake2.died && snake.died){
+    if (snake2.died && snake.died) {
+        redScore -= 1;
+        greenScore -= 1;
         tied = true;
     }
     if (stopGame) {
@@ -98,6 +106,7 @@ function draw() {
     drawCoins();
     snake.drawSnake();
     snake2.drawSnake();
+
 }
 
 function manageCoins() {
@@ -179,7 +188,7 @@ function Snake(id,x,y,r,g,b) {
     this.positions = [];
     this.length = 3;
 
-    this.update = function () {
+    this.move = function() {
         this.direction = this.desiredDirection;
         switch (this.direction) {
             case 0:
@@ -196,15 +205,25 @@ function Snake(id,x,y,r,g,b) {
                 break;
         }
 
+    }
+
+    this.update = function () {
+
+        if (snake.x == snake2.x && snake.y == snake2.y) {
+            this.die();
+        }
+
         //Check for collision with self and other snake
         for (var i = 0; i < snake.positions.length; i++) {
             if (snake.positions[i].x === this.x && snake.positions[i].y == this.y) {
+                console.log(this.id + " Collided with snake 0 ");
                 this.die();
             }
         }
 
         for (var i = 0; i < snake2.positions.length; i++) {
             if (snake2.positions[i].x === this.x && snake2.positions[i].y == this.y) {
+                console.log(this.id + " Collided with snake 1 ");
                 this.die();
             }
         }
@@ -228,7 +247,6 @@ function Snake(id,x,y,r,g,b) {
                 goodCoins.splice(i, 1);
             }
         }
-
         this.positions.push(new vec2(this.x, this.y));
         if (this.positions.length > this.length) {
             this.positions.splice(0, 1);
