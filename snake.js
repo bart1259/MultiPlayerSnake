@@ -14,7 +14,7 @@ var greenScore = 0;
 function setup() {
     createCanvas(1365, 749);
 
-    frameRate(12);
+    frameRate(36);
 
     snake = new Snake(0, 10, 10, 255, 0, 0);
     snake2 = new Snake(1, 52, 10, 0, 255, 0);
