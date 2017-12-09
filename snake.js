@@ -7,12 +7,14 @@ var snake1Won = false;
 var reset = false;
 var tied = false;
 var startGame = true;
+var gridEnabled = true;
 
 var redScore = 0;
 var greenScore = 0;
 
 function setup() {
     createCanvas(1365, 749);
+    setUpMainMenu();
 
     frameRate(12);
 
@@ -25,20 +27,7 @@ function draw() {
     background(50);
 
     if (startGame) {
-        textSize(62);
-        textAlign(CENTER);
-        fill(255,255,0);
-        text("Multi Player Snake", width / 2, height / 2 - 70);
-        textSize(32);
-        text("Press ENTER to start", width / 2, height / 2);
-        textAlign(CENTER);
-        text("Red uses WASD", width / 2, height / 2 + 50);
-        text("Green uses Arrows", width / 2, height / 2 + 100);
-        textSize(62);
-        fill(255, 0, 0);
-        text(redScore, width / 4, height / 2);
-        fill(0, 255, 0);
-        text(greenScore, 3 * width / 4, height / 2);
+        drawMainMenu();
         return;
     }
 
@@ -79,14 +68,17 @@ function draw() {
     }
 
     //Draw grid
-    for (var i = 0; i < 1364; i += 22) {
-        stroke(110);
-        line(i, 0, i, 764);
+    if (gridEnabled) {
+        for (var i = 0; i < 1364; i += 22) {
+            stroke(110);
+            line(i, 0, i, 764);
+        }
+        for (var i = 0; i < 764; i += 22) {
+            stroke(110);
+            line(0, i, 1364, i);
+        }
     }
-    for (var i = 0; i < 764; i += 22) {
-        stroke(110);
-        line(0, i, 1364, i);
-    }
+
     snake.move();
     snake2.move();
     snake.update();
@@ -112,10 +104,10 @@ function draw() {
 }
 
 function manageCoins() {
-    if(coins.length < 5){
+    if (coins.length < NumberOfCoins - (NumberOfCoins * percentBitCoins)) {
         coins.push(genCoin());
     }
-    if (goodCoins.length < 1) {
+    if (goodCoins.length < Math.floor(NumberOfCoins * percentBitCoins)) {
         goodCoins.push(genCoin());
     }
 }
@@ -257,7 +249,8 @@ function Snake(id,x,y,r,g,b) {
 
     this.drawSnake = function () {
         for (var i = 0; i < this.positions.length; i++) {
-            fillSquare(this.positions[i].x, this.positions[i].y, this.r, this.g, this.b);
+            var trigValue = 100* Math.cos((this.positions.length - i) / 3);
+            fillSquare(this.positions[i].x, this.positions[i].y, this.r + trigValue, this.g + trigValue, this.b + trigValue);
         }
     };
 
@@ -301,10 +294,20 @@ function keyPressed() {
             snake2.desiredDirection = 1;
     }
 
+    if (keyCode === 71) {
+        gridEnabled = !gridEnabled;
+    }
+
     if (keyCode === ENTER && stopGame) {
         reset = true;
     }
     if (keyCode === ENTER && startGame) {
         startGame = false;
+        destroyMainMenu();
     }
+}
+
+function setSpeed(speed) {
+
+    frameRate(speed);
 }
