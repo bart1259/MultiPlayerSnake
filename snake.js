@@ -1,4 +1,4 @@
-var snake;
+﻿var snake;
 var snake2;
 var coins = [];
 var goodCoins = [];
